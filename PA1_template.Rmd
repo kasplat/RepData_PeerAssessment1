@@ -8,18 +8,60 @@ output:
 
 ## Loading and preprocessing the data
 
+```{r installpackage,echo=FALSE,results='hide'}
+install.packages("knitr")
+library(knitr)
+```
+
+```{r readindata, echo = TRUE}
+data <- read.csv("activity.csv")
+
+```
 
 
+```{r processdate}
+data$date <- as.Date(data$Date, "%Y-%m-%d")
+```
 ## What is mean total number of steps taken per day?
+```{r hist1, echo = TRUE}
+data2 <- subset(na.omit(object = data))
+data3 <- aggregate(data2$steps, data2[2], sum)
+barplot(data3$x, names.arg = data3$date, col ="red", main  = "Total Steps per day", xlab = "Date", ylab = "Number of Steps")
 
+```
 
+*The mean number of steps per day*
+```{r mean, echo = TRUE}
+mean(data3$x)
+```
+*The median steps per day*
+```{r median, echo  = TRUE}
+median(data3$x)
+```
 
 ## What is the average daily activity pattern?
+```{r timeplot1, echo = TRUE}
+data4 <- aggregate(data$steps, data[3], mean, na.rm =TRUE)
+plot(x ~ interval, data = data4, type = "l", xlab = "interval", ylab = "Average daily activity pattern", col = "blue")
 
-
-
+```
+```{r max interval, echo = TRUE}
+data4[c(which(data4$x == max(data4$x)),which(data4$x == max(data4$x))+1),1]
+```
 ## Imputing missing values
+```{r numofmissingvals, echo =TRUE}
+nrow(data[is.na(data$steps),])
 
+```
+```{r fillinmissing}
+names(data4) <- c("interval", "steps")
+data5<- merge(data,data4,by="interval",na.rm=TRUE)
+data5$steps<-ifelse(is.na(data5$steps),round(data5$steps, digits=2),data5$steps)
 
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?
+```{r}
+
+
+```
